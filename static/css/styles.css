@@ -1,6 +1,10 @@
 html, body {
-    height:100%;
-    margin: 0px;
+
+    margin: 0;
+    background-color : #F9E4C8;
+    color: #24221f;
+
+
 }
 
 h1 {
@@ -14,16 +18,30 @@ h1 {
 }
 
 
+a {
+    text-decoration:none;
+    color: #403d37;
+    font-weight: 600;
+}
+
+a:hover {
+    text-decoration:none;
+    color: #000;
+
+}
+
+
 .global-container {
 
 
-    background-color : #f1f1f1;
+    background-color : #FAEEE0;
 
     margin: 0 auto;
     text-align:center;
     overflow: auto;
 
     width:65%;
+    min-height:100vh;
 
 
     display: flex;
@@ -47,6 +65,12 @@ h1 {
     padding: 1.75rem 0;
 
 }
+
+
+
+
+
+
 
 .yt-video {
     height:315px;
@@ -75,16 +99,42 @@ h1 {
 
 
 
+.custom-btn {
+margin: 50px 0 20px;
+        background-color: #bd9c6f;
+            border-color : #b8976c;
+            color: #fff;
+            padding:15px;
+            border-radius:0.5rem;
+            font-weight:700;
+
+}
+
+.custom-btn:hover {
+
+    background-color: #9e835d;
+    border-color : #9c805c;
+    text-decoration:none;
+    color: #fff;
+}
 
 
 
+@media (max-width: 700px) {
+.yt-video {
+    height:244px;
+
+    width:435px;
+
+}
+}
 
 
-@media only screen and (max-width: 900px) {
+@media (max-width: 900px) {
 .global-container {
     width: 100%;
-    height:100%;
-    padding: 0 3em;
+
+    padding: 3rem 0 6rem;
 }
 h1 {
     font-size: 26px;
@@ -95,7 +145,15 @@ h1 {
 }
 .example_id {
     margin-bottom: 20px;
-          width: 90%;
+          width: 80%;
 
 }
+
+
+
+
+
+}
+
+
 
