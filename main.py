@@ -1,62 +1,95 @@
 import datetime
 import os
 
-import requests
+from flask import Flask, render_template, flash, url_for
+from flask_bootstrap import Bootstrap
+from werkzeug.utils import redirect
 
-from flask import Flask, render_template
+from forms import AddChannelForm
+from utils import enough_time_since_last_request, request_latest_video
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
-API_KEY = os.environ.get('API_KEY')
-URL = 'https://www.googleapis.com/youtube/v3/search'
-
-
-def request_latest_video(channel_id) -> str:
-    params = {
-        'key': API_KEY,
-        'channelId': channel_id,
-        'part': 'snippet,id',
-        'order': 'date',
-        'maxResults': 20,
-    }
-
-    channel_data = requests.get(url=URL, params=params).json()
-
-    return channel_data.get('items')[0].get('id').get('videoId')
+Bootstrap(app)
 
 
 @app.route("/")
 def home():
-    with open("last_checked_time.txt", "r") as f:
-        last_checked_time_str = f.read()
+    updated = False
 
-    with open("channels_ids.txt", "r") as f:
-        channels_ids = f.readlines()
-
-    channels_list = [channel_id.strip('\n') for channel_id in channels_ids]
-
-    # # TODO: Limit to 1 per 24 hours to not exceed quota
-    # # YOUTUBE API CALL
-    # video_ids = [request_latest_video(channel) for channel in channels_list]
-
-    print(last_checked_time_str)
-    last_checked_time = datetime.datetime.strptime(last_checked_time_str, "%Y/%m/%d, %H:%M:%S")
-    print(last_checked_time)
-
-    # Add 24hours delta to the loaded data to determine when we need to call the API again
-    next_check_time = last_checked_time + datetime.timedelta(hours=24)
-    print(next_check_time)
-
-    # Check if current time > saved time value
-    print(datetime.datetime.now() > last_checked_time)
-    # Check if current time > next time check value
-    print(datetime.datetime.now() >= next_check_time)
+    # Limit to 1 per 24 hours to not exceed quota
     # If True: call API
+    if enough_time_since_last_request():
 
-    # with open("last_checked_time.txt","w") as f:
-    #     f.write(datetime.datetime.now().strftime("%Y/%m/%d, %H:%M:%S"))
+        print('Collecting updated data')
 
-    return render_template("videos.html", video_ids=video_ids)
+        with open("channels_ids.txt", "r") as f:
+            channels_ids = f.readlines()
+
+        channels_list = [channel_id.strip('\n') for channel_id in channels_ids]
+
+        # YOUTUBE API CALL
+        video_ids = [request_latest_video(channel) for channel in channels_list]
+
+        # # FOR TESTING
+        # video_ids = ['NSWr6dkc_Xw', 'bRV7dQW9ZWE', "tX06aPu1aIg"]
+
+        # Save current videos id
+        with open('videos_ids.txt', 'w') as f:
+            for video_id in video_ids:
+                f.write(f"{video_id}\n")
+
+        # Save current date
+        with open("last_checked_time.txt", "w") as f:
+            f.write(datetime.datetime.now().strftime("%Y/%m/%d, %H:%M:%S"))
+        print('Saving current date')
+
+        updated = True
+
+    else:
+        # LOAD SAVED DATA
+        print('Loading data from database')
+
+        try:
+            with open("videos_ids.txt", "r") as f:
+                video_ids = f.readlines()
+        except FileNotFoundError:
+            video_ids = []
+        else:
+            video_ids = [video_id.strip('\n') for video_id in video_ids]
+
+    return render_template("videos.html", video_ids=video_ids, updated=updated)
+
+
+@app.route("/add", methods=['POST', 'GET'])
+def add_channel():
+    form = AddChannelForm()
+
+    if form.validate_on_submit():
+
+        channel_id = form.channel_id.data
+
+        with open("channels_ids.txt", "r") as f:
+            channels_ids = f.readlines()
+
+        channels_list = [channel_id.strip('\n') for channel_id in channels_ids]
+
+        if channel_id in channels_list:
+            flash('already exists')
+
+        else:
+            channels_list.append(channel_id)
+
+            # Save updated channels list
+            with open("channels_ids.txt", "w") as f:
+                for channel_id in channels_list:
+                    f.write(f'{channel_id}\n')
+            print('Saving current data')
+
+            return redirect(url_for('home'))
+
+    return render_template("add.html", form=form)
 
 
 if __name__ == "__main__":

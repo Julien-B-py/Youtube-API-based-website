@@ -1,18 +1,43 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Videos</title>
-</head>
-<body>
+{% extends "bootstrap/base.html" %}
+{% block title %}Latest videos listing{% endblock %}
 
-{% for video_id in video_ids %}
-<iframe width="560" height="315"
-        src="https://www.youtube.com/embed/{{video_id}}"
-        title="YouTube video player" frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen></iframe>
-{% endfor %}
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='css/styles.css')}}">
+{% endblock %}
 
-</body>
-</html>
+
+{% block content %}
+
+
+<div class="global-container">
+
+    <h1>Here are the most recent videos from your favorite YouTube channels</h1>
+
+    {% if updated %}
+    <h1>VIDEO LISTING SUCCESSFULLY UPDATED</h1>
+    {% endif %}
+
+    <div class="videos-container">
+
+        {% for video_id in video_ids %}
+        <iframe class="yt-video"
+                src="https://www.youtube.com/embed/{{video_id}}"
+                title="YouTube video player" frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen></iframe>
+        {% endfor %}
+
+    </div>
+
+    <a class="btn btn-primary btn-lg" href="{{ url_for('add_channel') }}">Add a new YouTube channel</a>
+
+</div>
+
+
+
+{% endblock %}
+
+
+

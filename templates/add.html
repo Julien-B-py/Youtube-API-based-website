@@ -1,0 +1,49 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Add a new channel{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='css/styles.css')}}">
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="global-container">
+
+  <h1>Add a new YouTube channel by id</h1>
+
+    <img class="example_id" src="{{url_for('.static', filename='img/example_id.png')}}" alt="example">
+
+<div class="custom-form">
+
+
+
+
+{{ wtf.quick_form(form, novalidate=True) }}
+</div>
+
+    {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class=flashes>
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+  <p><a href="{{ url_for('home') }}">Return to index page</a></p>
+
+</div>
+
+
+
+{% endblock %}
+
+
+
