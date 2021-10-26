@@ -3,6 +3,7 @@ import os
 
 from flask import Flask, render_template, flash, url_for
 from flask_bootstrap import Bootstrap
+from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import redirect
 
 from forms import AddChannelForm
@@ -10,6 +11,19 @@ from utils import enough_time_since_last_request, request_latest_video
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yt_channels.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
+
+class Channel(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    channel_id = db.Column(db.String(80), unique=True, nullable=False)
+    latest_video_id = db.Column(db.String(120), nullable=True)
+    last_check_time = db.Column(db.String(80), nullable=True)
+
+
+db.create_all()
 
 Bootstrap(app)
 
@@ -24,21 +38,19 @@ def home():
 
         print('Collecting updated data')
 
-        with open("channels_ids.txt", "r") as f:
-            channels_ids = f.readlines()
+        all_channels = db.session.query(Channel).all()
+        channels_list = [channel.channel_id for channel in all_channels]
 
-        channels_list = [channel_id.strip('\n') for channel_id in channels_ids]
+        # channels_list = [channel_id.strip('\n') for channel_id in channels_ids]
 
         # YOUTUBE API CALL
         video_ids = [request_latest_video(channel) for channel in channels_list]
 
-        # # FOR TESTING
-        # video_ids = ['NSWr6dkc_Xw', 'bRV7dQW9ZWE', "tX06aPu1aIg"]
+        # TEST
+        for channel, video_id in zip(all_channels, video_ids):
+            channel.latest_video_id = video_id
 
-        # Save current videos id
-        with open('videos_ids.txt', 'w') as f:
-            for video_id in video_ids:
-                f.write(f"{video_id}\n")
+        db.session.commit()
 
         # Save current date
         with open("last_checked_time.txt", "w") as f:
@@ -48,16 +60,13 @@ def home():
         updated = True
 
     else:
+
         # LOAD SAVED DATA
         print('Loading data from database')
 
-        try:
-            with open("videos_ids.txt", "r") as f:
-                video_ids = f.readlines()
-        except FileNotFoundError:
-            video_ids = []
-        else:
-            video_ids = [video_id.strip('\n') for video_id in video_ids]
+        all_channels = db.session.query(Channel).all()
+
+        video_ids = [channel.latest_video_id for channel in all_channels if channel.latest_video_id is not None]
 
     return render_template("videos.html", video_ids=video_ids, updated=updated)
 
@@ -70,24 +79,18 @@ def add_channel():
 
         channel_id = form.channel_id.data
 
-        with open("channels_ids.txt", "r") as f:
-            channels_ids = f.readlines()
+        channel = Channel.query.filter_by(channel_id=channel_id).first()
 
-        channels_list = [channel_id.strip('\n') for channel_id in channels_ids]
-
-        if channel_id in channels_list:
+        if channel:
             flash('already exists')
+            return render_template("add.html", form=form)
 
-        else:
-            channels_list.append(channel_id)
+        # DB
+        new_channel = Channel(channel_id=channel_id)
+        db.session.add(new_channel)
+        db.session.commit()
 
-            # Save updated channels list
-            with open("channels_ids.txt", "w") as f:
-                for channel_id in channels_list:
-                    f.write(f'{channel_id}\n')
-            print('Saving current data')
-
-            return redirect(url_for('home'))
+        return redirect(url_for('home'))
 
     return render_template("add.html", form=form)
 
