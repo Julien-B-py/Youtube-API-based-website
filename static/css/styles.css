@@ -1,32 +1,33 @@
 html, body {
 
-    margin: 0;
     background-color : #F9E4C8;
     color: #24221f;
+    margin: 0;
 
 
 }
 
 h1 {
+    line-height:5rem;
     margin:0;
     padding: 50px 0;
     text-align:center;
-    width:70%;
-    line-height:5rem;
+    width:85%;
+
 
 
 }
 
 
 a {
-    text-decoration:none;
     color: #403d37;
     font-weight: 600;
+    text-decoration:none;
 }
 
 a:hover {
-    text-decoration:none;
     color: #000;
+    text-decoration:none;
 
 }
 
@@ -34,21 +35,17 @@ a:hover {
 .global-container {
 
 
-    background-color : #FAEEE0;
-
-    margin: 0 auto;
-    text-align:center;
-    overflow: auto;
-
-    width:65%;
-    min-height:100vh;
-
-
-    display: flex;
     align-items:center;
-        justify-content: center;
+    background-color : #FAEEE0;
+    display: flex;
     flex-direction: column;
+    justify-content: center;
+    margin: 0 auto;
+    min-height:100vh;
+    overflow: auto;
     padding:50px 0;
+    text-align:center;
+    width:65%;
 
 
 
@@ -76,15 +73,16 @@ a:hover {
     height:315px;
     padding:20px;
     width:560px;
-
 }
+
+
 
 
 .custom-form {
 
+    margin:0 auto;
     padding: 50px;
     width:60%;
-    margin:0 auto;
 
 }
 
@@ -100,13 +98,13 @@ a:hover {
 
 
 .custom-btn {
-margin: 50px 0 20px;
-        background-color: #bd9c6f;
-            border-color : #b8976c;
-            color: #fff;
-            padding:15px;
-            border-radius:0.5rem;
-            font-weight:700;
+    background-color: #bd9c6f;
+    border-color : #b8976c;
+    border-radius:0.5rem;
+    color: #fff;
+    font-weight:700;
+    margin: 50px 0 20px;
+    padding:15px;
 
 }
 
@@ -114,43 +112,44 @@ margin: 50px 0 20px;
 
     background-color: #9e835d;
     border-color : #9c805c;
-    text-decoration:none;
     color: #fff;
+    text-decoration:none;
 }
 
 
 
 @media (max-width: 700px) {
-.yt-video {
-    height:244px;
 
-    width:435px;
+    .yt-video {
+        height:244px;
+        width:435px;
 
-}
+    }
 }
 
 
 @media (max-width: 900px) {
-.global-container {
-    width: 100%;
 
-    padding: 3rem 0 6rem;
-}
-h1 {
-    font-size: 26px;
-    line-height: 4rem;
-}
-.custom-form {
-    width: 100%;
-}
-.example_id {
-    margin-bottom: 20px;
-          width: 80%;
+    h1 {
+        font-size: 26px;
+        line-height: 4rem;
+    }
 
-}
+    .global-container {
+        padding: 3rem 0 6rem;
+        width: 100%;
+    }
 
 
+    .custom-form {
+        width: 100%;
+    }
 
+    .example_id {
+        margin-bottom: 20px;
+        width: 80%;
+
+    }
 
 
 }

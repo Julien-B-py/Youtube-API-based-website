@@ -16,13 +16,12 @@
     <h1>Most recent videos from your favorite YouTube channels</h1>
 
     {% if updated %}
-    <h1>VIDEO LISTING SUCCESSFULLY UPDATED</h1>
+    <p>Listing successfully updated</p>
     {% endif %}
 
     <div class="videos-container">
 
         {% for video_id in video_ids %}
-
 
 
         <iframe class="yt-video"
