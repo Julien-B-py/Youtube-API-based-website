@@ -17,25 +17,25 @@
 
   <h1>Add a new YouTube channel</h1>
 
-    <img class="example_id" src="{{url_for('.static', filename='img/example_id.png')}}" alt="example">
+  <img class="example_id" src="{{url_for('.static', filename='img/example_id.png')}}" alt="example">
 
-<div class="custom-form">
-
-
+  <div class="custom-form">
 
 
-{{ wtf.quick_form(form, novalidate=True) }}
-</div>
 
-    {% with messages = get_flashed_messages() %}
+
+    {{ wtf.quick_form(form, novalidate=True) }}
+  </div>
+
+  {% with messages = get_flashed_messages() %}
   {% if messages %}
-    <div class=flashes>
+  <div class=flashes>
     {% for message in messages %}
-      <p>{{ message }}</p>
+    <p>{{ message }}</p>
     {% endfor %}
-    </div>
+  </div>
   {% endif %}
-{% endwith %}
+  {% endwith %}
 
   <p><a href="{{ url_for('home') }}">Return to index page</a></p>
 

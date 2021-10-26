@@ -20,7 +20,11 @@ class Channel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     channel_id = db.Column(db.String(80), unique=True, nullable=False)
     latest_video_id = db.Column(db.String(120), nullable=True)
-    last_check_time = db.Column(db.String(80), nullable=True)
+
+
+class Time(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    last_checked_time = db.Column(db.String(100), unique=True, nullable=False)
 
 
 db.create_all()
@@ -28,47 +32,57 @@ db.create_all()
 Bootstrap(app)
 
 
+def manual_update():
+    print('Collecting updated data')
+
+    all_channels = db.session.query(Channel).all()
+    channels_list = [channel.channel_id for channel in all_channels]
+
+    # YOUTUBE API CALL
+    video_ids = [request_latest_video(channel) for channel in channels_list]
+
+    # UPDATE DATABASE WITH LATEST VIDEO IDS
+    for channel, video_id in zip(all_channels, video_ids):
+        channel.latest_video_id = video_id
+
+    db.session.commit()
+
+    # UPDATE DATABASE WITH LATEST CHECK TIME
+    time_update = Time.query.filter_by(id=1).first()
+    time_update.last_checked_time = datetime.datetime.now().strftime("%Y/%m/%d, %H:%M:%S")
+    db.session.commit()
+
+    return video_ids
+
+
 @app.route("/")
 def home():
-    updated = False
+    last_checked = db.session.query(Time).first()
 
-    # Limit to 1 per 24 hours to not exceed quota
-    # If True: call API
-    if enough_time_since_last_request():
-
-        print('Collecting updated data')
-
-        all_channels = db.session.query(Channel).all()
-        channels_list = [channel.channel_id for channel in all_channels]
-
-        # channels_list = [channel_id.strip('\n') for channel_id in channels_ids]
-
-        # YOUTUBE API CALL
-        video_ids = [request_latest_video(channel) for channel in channels_list]
-
-        # TEST
-        for channel, video_id in zip(all_channels, video_ids):
-            channel.latest_video_id = video_id
-
+    if not last_checked:
+        last_checked_time_str = "1900/01/01, 00:00:00"
+        new_time = Time(id=1, last_checked_time=last_checked_time_str)
+        db.session.add(new_time)
         db.session.commit()
+    else:
+        last_checked_time_str = last_checked.last_checked_time
 
-        # Save current date
-        with open("last_checked_time.txt", "w") as f:
-            f.write(datetime.datetime.now().strftime("%Y/%m/%d, %H:%M:%S"))
-        print('Saving current date')
+    # Limit to 1 per 12 hours to not exceed daily quota
+    if enough_time_since_last_request(last_checked_time_str):
 
-        updated = True
+        video_ids = manual_update()
+        flash("Listing successfully updated")
 
     else:
 
         # LOAD SAVED DATA
-        print('Loading data from database')
+        flash('Loaded data from our database')
 
         all_channels = db.session.query(Channel).all()
 
         video_ids = [channel.latest_video_id for channel in all_channels if channel.latest_video_id is not None]
 
-    return render_template("videos.html", video_ids=video_ids, updated=updated)
+    return render_template("videos.html", video_ids=video_ids)
 
 
 @app.route("/add", methods=['POST', 'GET'])
@@ -82,7 +96,7 @@ def add_channel():
         channel = Channel.query.filter_by(channel_id=channel_id).first()
 
         if channel:
-            flash('already exists')
+            flash('This channel is already registered')
             return render_template("add.html", form=form)
 
         # DB
@@ -93,6 +107,13 @@ def add_channel():
         return redirect(url_for('home'))
 
     return render_template("add.html", form=form)
+
+
+@app.route("/update")
+def force_update():
+    manual_update()
+    flash('Manual update successful')
+    return redirect(url_for('home'))
 
 
 if __name__ == "__main__":

@@ -15,11 +15,22 @@
 
     <h1>Most recent videos from your favorite YouTube channels</h1>
 
-    {% if updated %}
-    <p>Listing successfully updated</p>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class=flashes>
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    </div>
     {% endif %}
+    {% endwith %}
 
     <div class="videos-container">
+
+        {% if not video_ids %}
+        <p>Please add a Youtube channel first</p>
+        {% endif %}
 
         {% for video_id in video_ids %}
 
@@ -36,7 +47,10 @@
 
     </div>
 
-    <a class="custom-btn" href="{{ url_for('add_channel') }}">Add a new YouTube channel</a>
+    <div class="bottom-buttons">
+        <a class="custom-btn" href="{{ url_for('add_channel') }}">Add a new YouTube channel</a>
+        <a class="custom-btn" href="{{ url_for('force_update') }}">Force update</a>
+    </div>
 
 </div>
 

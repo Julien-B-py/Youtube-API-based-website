@@ -7,13 +7,7 @@ API_KEY = os.environ.get('API_KEY')
 URL = 'https://www.googleapis.com/youtube/v3/search'
 
 
-def enough_time_since_last_request() -> bool:
-    try:
-        with open("last_checked_time.txt", "r") as f:
-            last_checked_time_str = f.read()
-    except FileNotFoundError:
-        last_checked_time_str = "1900/01/01, 00:00:00"
-
+def enough_time_since_last_request(last_checked_time_str) -> bool:
     # print(last_checked_time_str)
     last_checked_time = datetime.datetime.strptime(last_checked_time_str, "%Y/%m/%d, %H:%M:%S")
     # print(last_checked_time)
@@ -22,7 +16,7 @@ def enough_time_since_last_request() -> bool:
     next_check_time = last_checked_time + datetime.timedelta(hours=12)
 
     # # FOR TESTING
-    # next_check_time = last_checked_time + datetime.timedelta(minutes=5)
+    # next_check_time = last_checked_time + datetime.timedelta(minutes=1)
 
     # print(next_check_time)
 
