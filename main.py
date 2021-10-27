@@ -39,20 +39,33 @@ def manual_update():
     channels_list = [channel.channel_id for channel in all_channels]
 
     # YOUTUBE API CALL
-    video_ids = [request_latest_video(channel) for channel in channels_list]
+    video_ids = [request_latest_video(channel) for channel in channels_list if
+                 request_latest_video(channel) != '']
 
-    # UPDATE DATABASE WITH LATEST VIDEO IDS
-    for channel, video_id in zip(all_channels, video_ids):
-        channel.latest_video_id = video_id
+    if video_ids:
 
-    db.session.commit()
+        # UPDATE DATABASE WITH LATEST VIDEO IDS
+        for channel, video_id in zip(all_channels, video_ids):
+            channel.latest_video_id = video_id
 
+        db.session.commit()
+
+        # UPDATE DATABASE WITH LATEST CHECK TIME
+        update_last_checked_time()
+
+        return video_ids
+
+    # UPDATE DATABASE WITH LATEST CHECK TIME
+    update_last_checked_time()
+
+    return []
+
+
+def update_last_checked_time():
     # UPDATE DATABASE WITH LATEST CHECK TIME
     time_update = Time.query.filter_by(id=1).first()
     time_update.last_checked_time = datetime.datetime.now().strftime("%Y/%m/%d, %H:%M:%S")
     db.session.commit()
-
-    return video_ids
 
 
 @app.route("/")

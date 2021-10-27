@@ -33,6 +33,12 @@ def request_latest_video(channel_id) -> str:
         'maxResults': 1,
     }
 
-    channel_data = requests.get(url=URL, params=params).json()
-
-    return channel_data.get('items')[0].get('id').get('videoId')
+    try:
+        response = requests.get(url=URL, params=params)
+        response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        return ''
+    else:
+        channel_data = response.json()
+        # print(channel_data)
+        return channel_data.get('items')[0].get('id').get('videoId')
