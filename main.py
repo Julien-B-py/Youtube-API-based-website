@@ -19,7 +19,9 @@ db = SQLAlchemy(app)
 class Channel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     channel_id = db.Column(db.String(80), unique=True, nullable=False)
-    latest_video_id = db.Column(db.String(120), nullable=True)
+    channel_name = db.Column(db.String(100), unique=True, nullable=False)
+    latest_video_id = db.Column(db.String(120))
+    new = db.Column(db.Boolean, default=True)
 
 
 class Time(db.Model):
@@ -32,7 +34,7 @@ db.create_all()
 Bootstrap(app)
 
 
-def manual_update():
+def manual_update() -> None:
     print('Collecting updated data')
 
     all_channels = db.session.query(Channel).all()
@@ -46,22 +48,28 @@ def manual_update():
 
         # UPDATE DATABASE WITH LATEST VIDEO IDS
         for channel, video_id in zip(all_channels, video_ids):
-            channel.latest_video_id = video_id
+            if channel.latest_video_id == video_id:
+                channel.new = False
+            else:
+                channel.latest_video_id = video_id
+                channel.new = True
 
         db.session.commit()
 
         # UPDATE DATABASE WITH LATEST CHECK TIME
         update_last_checked_time()
 
-        return video_ids
+        print("OK")
+
+        return
 
     # UPDATE DATABASE WITH LATEST CHECK TIME
     update_last_checked_time()
 
-    return []
+    print("API ERROR")
 
 
-def update_last_checked_time():
+def update_last_checked_time() -> None:
     # UPDATE DATABASE WITH LATEST CHECK TIME
     time_update = Time.query.filter_by(id=1).first()
     time_update.last_checked_time = datetime.datetime.now().strftime("%Y/%m/%d, %H:%M:%S")
@@ -71,7 +79,6 @@ def update_last_checked_time():
 @app.route("/")
 def home():
     last_checked = db.session.query(Time).first()
-
     if not last_checked:
         last_checked_time_str = "1900/01/01, 00:00:00"
         new_time = Time(id=1, last_checked_time=last_checked_time_str)
@@ -82,20 +89,19 @@ def home():
 
     # Limit to 1 per 12 hours to not exceed daily quota
     if enough_time_since_last_request(last_checked_time_str):
+        manual_update()
+        # flash("Listing successfully updated")
 
-        video_ids = manual_update()
-        flash("Listing successfully updated")
+    # LOAD SAVED DATA
+    # flash('Loaded data from our database')
 
-    else:
+    all_channels = db.session.query(Channel).all()
 
-        # LOAD SAVED DATA
-        flash('Loaded data from our database')
+    new_videos = any(channel.new for channel in all_channels)
 
-        all_channels = db.session.query(Channel).all()
+    # video_ids = [channel.latest_video_id for channel in all_channels if channel.latest_video_id is not None]
 
-        video_ids = [channel.latest_video_id for channel in all_channels if channel.latest_video_id is not None]
-
-    return render_template("videos.html", video_ids=video_ids)
+    return render_template("videos.html", all_channels=all_channels, new_videos=new_videos)
 
 
 @app.route("/add", methods=['POST', 'GET'])
@@ -105,6 +111,7 @@ def add_channel():
     if form.validate_on_submit():
 
         channel_id = form.channel_id.data
+        channel_name = form.channel_name.data
 
         channel = Channel.query.filter_by(channel_id=channel_id).first()
 
@@ -113,7 +120,7 @@ def add_channel():
             return render_template("add.html", form=form)
 
         # DB
-        new_channel = Channel(channel_id=channel_id)
+        new_channel = Channel(channel_id=channel_id, channel_name=channel_name)
         db.session.add(new_channel)
         db.session.commit()
 
@@ -126,6 +133,14 @@ def add_channel():
 def force_update():
     manual_update()
     flash('Manual update successful')
+    return redirect(url_for('home'))
+
+
+@app.route("/watched<channel_id>")
+def watched(channel_id):
+    channel = Channel.query.filter_by(channel_id=channel_id).first()
+    channel.new = False
+    db.session.commit()
     return redirect(url_for('home'))
 
 
