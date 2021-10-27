@@ -30,7 +30,7 @@ def request_latest_video(channel_id) -> str:
         'channelId': channel_id,
         'part': 'snippet,id',
         'order': 'date',
-        'maxResults': 20,
+        'maxResults': 1,
     }
 
     channel_data = requests.get(url=URL, params=params).json()

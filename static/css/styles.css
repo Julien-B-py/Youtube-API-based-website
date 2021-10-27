@@ -45,7 +45,7 @@ a:hover {
     overflow: auto;
     padding:50px 0;
     text-align:center;
-    width:65%;
+    width:70%;
 
 
 
@@ -71,7 +71,7 @@ a:hover {
 
 .yt-video {
     height:315px;
-    padding:20px;
+    margin:20px;
     width:560px;
 }
 
@@ -126,8 +126,8 @@ a:hover {
 @media (max-width: 700px) {
 
     .yt-video {
-        height:244px;
-        width:435px;
+        height:225px;
+        width:400px;
 
     }
 }
