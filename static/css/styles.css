@@ -1,23 +1,17 @@
 html, body {
-
     background-color : #F9E4C8;
     color: #24221f;
     margin: 0;
-
-
 }
 
 h1 {
+    font-size: 20px;
     line-height:5rem;
     margin:0;
     padding: 50px 0;
     text-align:center;
     width:85%;
-
-
-
 }
-
 
 a {
     color: #403d37;
@@ -28,13 +22,17 @@ a {
 a:hover {
     color: #000;
     text-decoration:none;
+}
 
+p {
+    font-size: 12px;
+    line-height: 16px;
 }
 
 
+
+
 .global-container {
-
-
     align-items:center;
     background-color : #FAEEE0;
     display: flex;
@@ -46,81 +44,84 @@ a:hover {
     padding:50px 0;
     text-align:center;
     width:70%;
-
-
-
 }
 
-
 .videos-container {
-
-
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin: 0 auto;
     padding: 1.75rem 0;
-
 }
 
 
-
-
-
-
+.video-global {
+    margin-bottom:20px;
+}
 
 .yt-video {
     height:315px;
-    margin:20px;
+    margin:16px;
     width:560px;
 }
 
 
 
-
-.custom-form {
-
-    margin:0 auto;
-    padding: 50px;
-    width:60%;
-
+.mark-watched {
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 0;
+    margin-left:16px;
+    text-align: left;
 }
 
 
-
-
-.example_id {
-    margin-bottom : 100px;
-    border-radius: 1rem;
-
+.bottom-buttons {
+    margin: 50px 0;
 }
-
 
 
 .custom-btn {
     background-color: #bd9c6f;
     border-color : #b8976c;
     border-radius:0.5rem;
-    color: #fff;
     font-weight:700;
     margin: 0 15px;
     padding:15px;
-
+    color: #fff;
 }
 
 .custom-btn:hover {
-
     background-color: #9e835d;
     border-color : #9c805c;
-    color: #fff;
-    text-decoration:none;
+
+}
+
+.custom-btn:visited, .custom-btn:hover, .custom-btn:active, .custom-btn:focus {
+   text-decoration: none !important;
+   outline: none !important;
+   color: #fff !important;
 }
 
 
 
-.bottom-buttons {
-    margin: 50px 0;
+.example_id {
+    border-radius: 1rem;
+    margin-bottom : 100px;
 }
+
+
+
+.custom-form {
+    margin:0 auto;
+    padding: 50px;
+    width:60%;
+}
+
+
+
+
+
 
 
 @media (max-width: 700px) {
@@ -136,7 +137,7 @@ a:hover {
 @media (max-width: 900px) {
 
     h1 {
-        font-size: 26px;
+
         line-height: 4rem;
     }
 
@@ -146,15 +147,18 @@ a:hover {
     }
 
 
-    .custom-form {
-        width: 100%;
-    }
-
     .example_id {
         margin-bottom: 20px;
         width: 80%;
 
     }
+
+
+    .custom-form {
+        width: 100%;
+    }
+
+
 
 
 }

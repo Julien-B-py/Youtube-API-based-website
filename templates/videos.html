@@ -36,20 +36,24 @@
         <p>You are up to date</p>
         {% endif %}
 
+        {% if refresh_needed %}
+        <p>New channel(s) detected. Please press "force update" button.</p>
+        {% endif %}
+
 
 
 
         {% for channel in all_channels %}
         {% if channel.new and channel.latest_video_id %}
 
-        <div>
+        <div class="video-global">
             <iframe class="yt-video"
                     src="https://www.youtube.com/embed/{{channel.latest_video_id}}"
                     title="YouTube video player" frameborder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen></iframe>
 
-            <div><a href="{{ url_for('watched',channel_id=channel.channel_id) }}">OK</a></div>
+            <div class="mark-watched"><a href="{{ url_for('watched',channel_id=channel.channel_id) }}">Mark as watched</a></div>
         </div>
 
 
