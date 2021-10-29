@@ -11,7 +11,8 @@ from utils import enough_time_since_last_request, request_latest_video
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///yt_channels.db"
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL",  "sqlite:///yt_channels.db")
+# app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///yt_channels.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
