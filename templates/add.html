@@ -1,16 +1,9 @@
-{% extends "bootstrap/base.html" %}
+
 {% import "bootstrap/wtf.html" as wtf %}
-
-{% block title %}Add a new channel{% endblock %}
-
-{% block styles %}
-{{super()}}
-<link rel="stylesheet"
-      href="{{url_for('.static', filename='css/styles.css')}}">
-{% endblock %}
+{% include "header.html" %}
 
 
-{% block content %}
+
 
 
 <div class="global-container">
@@ -19,13 +12,20 @@
 
   <img class="example_id" src="{{url_for('.static', filename='img/example_id.png')}}" alt="example">
 
-  <div class="custom-form">
+
+
+<form class="custom-form" method="POST" action="/">
+    {{ form.csrf_token }}
+    <div class="form-field"><div>{{ form.channel_name.label }}</div> {{ form.channel_name(size=20) }}</div>
+  <div class="form-field">  <div>{{ form.channel_id.label }}</div> {{ form.channel_id(size=20) }}</div>
+
+    <div class="form-field"><input type="submit" class="custom-btn" value="Submit"></div>
+</form>
 
 
 
 
-    {{ wtf.quick_form(form, novalidate=True) }}
-  </div>
+
 
   {% with messages = get_flashed_messages() %}
   {% if messages %}
@@ -43,7 +43,7 @@
 
 
 
-{% endblock %}
+{% include "footer.html" %}
 
 
 

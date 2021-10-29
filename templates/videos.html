@@ -1,14 +1,4 @@
-{% extends "bootstrap/base.html" %}
-{% block title %}Latest videos listing{% endblock %}
-
-{% block styles %}
-{{super()}}
-<link rel="stylesheet"
-      href="{{url_for('.static', filename='css/styles.css')}}">
-{% endblock %}
-
-
-{% block content %}
+{% include "header.html" %}
 
 
 <div class="global-container">
@@ -41,8 +31,6 @@
         {% endif %}
 
 
-
-
         {% for channel in all_channels %}
         {% if channel.new and channel.latest_video_id %}
 
@@ -56,28 +44,21 @@
             <div class="mark-watched"><a href="{{ url_for('watched',channel_id=channel.channel_id) }}">Mark as watched</a></div>
         </div>
 
-
-
         {% endif %}
-
-
-
         {% endfor %}
-
 
 
     </div>
 
     <div class="bottom-buttons">
-        <a class="custom-btn" href="{{ url_for('add_channel') }}">Add a new YouTube channel</a>
         <a class="custom-btn" href="{{ url_for('force_update') }}">Force update</a>
     </div>
 
 </div>
 
+{% include "footer.html" %}
 
 
-{% endblock %}
 
 
 
