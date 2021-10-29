@@ -30,7 +30,7 @@ class Time(db.Model):
     last_checked_time = db.Column(db.String(100), unique=True, nullable=False)
 
 
-#db.create_all()
+db.create_all()
 
 Bootstrap(app)
 
