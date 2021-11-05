@@ -49,12 +49,8 @@ def manual_update() -> bool:
 
         # UPDATE DATABASE WITH LATEST VIDEO IDS
         for channel, video_id in zip(all_channels, video_ids):
-            if channel.latest_video_id == video_id:
-                print("false")
-                channel.new = False
-            else:
+            if channel.latest_video_id != video_id:
                 channel.latest_video_id = video_id
-                print("true")
                 channel.new = True
 
         db.session.commit()
