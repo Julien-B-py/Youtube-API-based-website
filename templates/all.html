@@ -1,0 +1,41 @@
+{% include "header.html" %}
+
+
+<div class="global-container">
+
+    <h1>All channels</h1>
+
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class=flashes>
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <div class="videos-container">
+
+
+        {% for channel in all_channels %}
+
+        <div class="channel-listing">{{ channel.channel_name }} - <a href="{{ url_for('delete',channel_id=channel.channel_id) }}">Delete</a></div>
+
+        {% endfor %}
+
+
+
+    </div>
+
+
+
+</div>
+
+{% include "footer.html" %}
+
+
+
+
+

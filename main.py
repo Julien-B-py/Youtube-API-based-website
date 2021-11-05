@@ -11,7 +11,7 @@ from utils import enough_time_since_last_request, request_latest_video
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL",  "sqlite:///yt_channels.db")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL", "sqlite:///yt_channels.db")
 # app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///yt_channels.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
@@ -115,8 +115,8 @@ def add_channel():
     form = AddChannelForm()
 
     if form.validate_on_submit():
-
-        channel_id = form.channel_id.data
+        # Works with full link
+        channel_id = form.channel_id.data.split('/')[-1]
         channel_name = form.channel_name.data
 
         channel = Channel.query.filter_by(channel_id=channel_id).first()
@@ -135,6 +135,20 @@ def add_channel():
     return render_template("add.html", form=form)
 
 
+@app.route("/delete/<channel_id>")
+def delete(channel_id):
+    channel_to_delete = Channel.query.filter_by(channel_id=channel_id).first()
+    db.session.delete(channel_to_delete)
+    db.session.commit()
+    return redirect(url_for("all_channels"))
+
+
+@app.route("/all")
+def all_channels():
+    all_channels = db.session.query(Channel).all()
+    return render_template("all.html", all_channels=all_channels)
+
+
 @app.route("/update")
 def force_update():
     if not manual_update():
@@ -143,7 +157,7 @@ def force_update():
     return redirect(url_for("home"))
 
 
-@app.route("/watched<channel_id>")
+@app.route("/watched/<channel_id>")
 def watched(channel_id):
     channel = Channel.query.filter_by(channel_id=channel_id).first()
     channel.new = False
