@@ -35,6 +35,11 @@ db.create_all()
 Bootstrap(app)
 
 
+@app.context_processor
+def inject_year():
+    return dict(year=datetime.datetime.now().year)
+
+
 def manual_update() -> bool:
     print("Collecting updated data")
 
@@ -80,6 +85,9 @@ def update_last_checked_time() -> None:
 @app.route("/")
 def home():
     last_checked = db.session.query(Time).first()
+
+
+
     if not last_checked:
         last_checked_time_str = "1900/01/01, 00:00:00"
         new_time = Time(id=1, last_checked_time=last_checked_time_str)
@@ -107,7 +115,7 @@ def home():
     return render_template("videos.html",
                            all_channels=all_channels,
                            new_videos=new_videos,
-                           refresh_needed=refresh_needed)
+                           refresh_needed=refresh_needed, last_checked_time_str=last_checked_time_str)
 
 
 @app.route("/add", methods=["POST", "GET"])

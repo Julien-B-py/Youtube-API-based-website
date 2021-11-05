@@ -3,8 +3,11 @@
 
 <div class="global-container">
 
-    <h1>Most recent videos from your favorite YouTube channels</h1>
+    <div class="main-header">
+        <div class="main-header-title"><h1>Most recent videos from your favorite YouTube channels</h1></div>
+    <div><p>Latest update: {{ last_checked_time_str }}</p></div>
 
+    </div>
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -17,6 +20,10 @@
     {% endwith %}
 
     <div class="videos-container">
+
+
+
+
 
         {% if not all_channels %}
         <p>Please add a Youtube channel first and try to update manually</p>

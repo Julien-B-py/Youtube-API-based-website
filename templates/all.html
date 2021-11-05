@@ -1,10 +1,8 @@
 {% include "header.html" %}
 
-
 <div class="global-container">
 
     <h1>All channels</h1>
-
 
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -16,19 +14,31 @@
     {% endif %}
     {% endwith %}
 
-    <div class="videos-container">
+    <div class="channels-container">
+        <table>
+            <thead>
+            <tr>
+                <th>Channel name</th>
+                <th>Date added</th>
+                <th>Total videos</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for channel in all_channels %}
 
+            <tr>
+                <td>{{ channel.channel_name }}</td>
+                <td>date</td>
+                <td>number</td>
+                <td><a href="{{ url_for('delete',channel_id=channel.channel_id) }}">Delete</a></td>
+            </tr>
 
-        {% for channel in all_channels %}
+            {% endfor %}
 
-        <div class="channel-listing">{{ channel.channel_name }} - <a href="{{ url_for('delete',channel_id=channel.channel_id) }}">Delete</a></div>
-
-        {% endfor %}
-
-
-
+            </tbody>
+        </table>
     </div>
-
 
 
 </div>

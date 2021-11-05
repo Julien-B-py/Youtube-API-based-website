@@ -1,5 +1,21 @@
+.all-channels-tab {
+    background:red;
+    max-width:960px;
+    min-width:640px;
+}
+
 .bottom-buttons {
     margin: 50px 0;
+}
+
+.channel-listing {
+    width:80%;
+}
+
+.channels-container {
+    border-radius: 10px;
+    border: 1px solid #e0cdb4;
+    margin:20px;
 }
 
 .custom-btn {
@@ -29,6 +45,15 @@
     width:60%;
 }
 
+.custom-navbar {
+    height:80px;
+}
+
+.custom-navbar-links {
+    justify-content: space-evenly;
+    width: 100%;
+}
+
 .example_id {
     border-radius: 1rem;
     margin-bottom : 100px;
@@ -52,9 +77,14 @@
     margin: 0 auto;
     min-height:100vh;
     overflow: auto;
-    padding:50px 0;
+    padding:150px 0;
     text-align:center;
     width:70%;
+}
+
+.main-header-title {
+    display: flex;
+    justify-content: center;
 }
 
 .mark-watched {
@@ -103,11 +133,9 @@ footer {
 
 h1 {
     font-size: 20px;
-    line-height:5rem;
+    line-height:3rem;
     margin:0;
-    padding: 50px 0;
     text-align:center;
-    width:85%;
 }
 
 html, body {
@@ -126,22 +154,22 @@ p {
     width: 100%;
 }
 
-
-
-.channel-listing {
-    width:80%;
+table {
+    text-align:left;
 }
 
-
-.custom-navbar-links {
-    width: 100%;
-justify-content: space-evenly;
+table tr:nth-child(odd) td {
+    background:#e0d6ca;
 }
 
-
-.custom-navbar {
-    height:80px;
+td, th {
+    padding: 5px 10px;
 }
+
+thead {
+    border-bottom: 1px solid #e0cdb4;
+}
+
 
 
 
@@ -159,7 +187,7 @@ justify-content: space-evenly;
 
     h1 {
 
-        line-height: 4rem;
+        line-height: 2rem;
     }
 
     .global-container {
