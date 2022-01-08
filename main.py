@@ -22,6 +22,8 @@ class Channel(db.Model):
     channel_id = db.Column(db.String(80), unique=True, nullable=False)
     channel_name = db.Column(db.String(100), unique=True, nullable=False)
     latest_video_id = db.Column(db.String(120))
+    date_added = db.Column(db.String(100))
+    total_videos = db.Column(db.Integer)
     new = db.Column(db.Boolean, default=True)
 
 
@@ -56,6 +58,7 @@ def manual_update() -> bool:
         for channel, video_id in zip(all_channels, video_ids):
             if channel.latest_video_id != video_id:
                 channel.latest_video_id = video_id
+                channel.total_videos += 1
                 channel.new = True
 
         db.session.commit()
@@ -135,7 +138,10 @@ def add_channel():
             return render_template("add.html", form=form)
 
         # DB
-        new_channel = Channel(channel_id=channel_id, channel_name=channel_name)
+        new_channel = Channel(channel_id=channel_id,
+                              channel_name=channel_name,
+                              date_added=datetime.datetime.now().strftime("%Y/%m/%d"),
+                              total_videos=0)
         db.session.add(new_channel)
         db.session.commit()
 
