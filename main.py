@@ -86,8 +86,6 @@ def update_last_checked_time() -> None:
 def home():
     last_checked = db.session.query(Time).first()
 
-
-
     if not last_checked:
         last_checked_time_str = "1900/01/01, 00:00:00"
         new_time = Time(id=1, last_checked_time=last_checked_time_str)
@@ -101,6 +99,9 @@ def home():
         if not manual_update():
             flash("The request cannot be completed because you have exceeded your quota.")
         # flash("Listing successfully updated")
+
+        else:
+            last_checked_time_str = db.session.query(Time).first().last_checked_time
 
     # LOAD SAVED DATA
     # flash("Loaded data from our database")

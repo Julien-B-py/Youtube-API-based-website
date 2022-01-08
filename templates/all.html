@@ -29,8 +29,8 @@
 
             <tr>
                 <td>{{ channel.channel_name }}</td>
-                <td>date</td>
-                <td>number</td>
+                <td>{{ channel.date_added }}</td>
+                <td>{{ channel.total_videos }}</td>
                 <td><a href="{{ url_for('delete',channel_id=channel.channel_id) }}">Delete</a></td>
             </tr>
 
